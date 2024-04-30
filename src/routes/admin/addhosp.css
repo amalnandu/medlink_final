@@ -1,0 +1,68 @@
+element.style {
+    height: 1.2em;
+    font-size: 1.1em;
+    width: 10em;
+    padding: 1.5em;
+}
+
+.button-rounded:hover {
+    color: #000000; 
+    background-color: #dc3845;
+}
+
+.dpiwee {
+    outline: 0;
+    margin: 10px 0px;
+    cursor: pointer;
+    transition: ease background-color 250ms;
+}
+
+.button-rounded {
+    width: 25px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #dc3845;
+    background-color: #000000;
+    border: 2.5px solid #dc3845;
+    font-family: "Littera Plain", sans-serif;
+    font-weight: medium;
+    font-size: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 180px;
+    text-align: center;
+    text-decoration: none;
+}
+
+* {
+    margin: 0em;
+}
+
+button {
+    appearance: auto;
+   
+    text-rendering: auto;
+    color: buttontext;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: center;
+    align-items: flex-start;
+    cursor: default;
+    box-sizing: border-box;
+    background-color: buttonface;
+    margin: 0em;
+    padding-block: 1px;
+    padding-inline: 6px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: buttonborder;
+    border-image: initial;
+}

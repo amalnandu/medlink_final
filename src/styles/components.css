@@ -1,0 +1,30 @@
+.card {
+  padding: 1em;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.label {
+  border-radius: 0.5em;
+  padding: 1em;
+  background-color: rgba(220, 56, 69, 0.11);
+}
+
+.labelWhite::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+.dropdown{
+
+}
+
+.dropdown-option{
+  box-shadow:0.1em 0.1em 0.1em 0.1em #eee;
+  background-color:white;
+}
+
+.dropdown-option:hover{
+  background-color:#eee
+}
+
+

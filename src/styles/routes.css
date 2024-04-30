@@ -1,0 +1,48 @@
+.initialPage {
+  margin: 0em;
+  width: 10vw;
+}
+
+.row-center {
+  display: flex;
+  flex-direction: row;
+}
+
+.column-center {
+  display: flex;
+  flex-direction: column;
+}
+
+.button-rounded {
+  width: 25px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  color: #dc3845;
+  background-color: #000000; /* Fill color for background */
+  border: 2.5px solid #dc3845; /* Stroke color for border */
+  font-family: "Littera Plain", sans-serif;
+  font-weight: medium;
+  font-size: 25px;
+  padding: 10px 20px; /* Adjust horizontal padding as needed */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transition on hover */
+  width: 180px; /* Button width adjusts to content */
+  text-align: center; /* Center align text */
+  text-decoration: none;
+}
+
+.button-rounded:hover {
+  color: #000000;
+  background-color: #dc3845; /* Fill color for background on hover */
+}
+.button-rounded a {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit parent color */
+  display: inherit; /* Inherit parent display property */
+}
+::placeholder {
+  color: #cacaca;
+  opacity: 1; /* Firefox */
+}
