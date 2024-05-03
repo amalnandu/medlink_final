@@ -2,12 +2,7 @@ import React,{useState} from "react";
 import {Card,Button,Alert,Label,SearchBar} from "../../components/components";
 import '../../styles/routes.css';
 import '../../styles/fonts.css';
-import { Dropdown } from "../../components/dropdown";
 
-
-const dropdownStyle={
-    width:"100%",
-}
 
 const label = {
     width: "70%",
@@ -56,7 +51,7 @@ const tableContentStyle={
 }
 
 const viewButtonStyle = {
-    width:"30%",
+    width:"100%",
     margin:"0",
     backgroundColor:"rgba(1, 1 , 1, 0.43)",
     color:"#10B3A0",
@@ -119,7 +114,8 @@ var memberdata=[""];//edit this
                 </div>
                 <Button style={submitButtonStyle}>Share</Button>
             </div>
-            <div style={{display:"flex",justifyContent:"center"}}><h5>Access List Of Seleted EMRS</h5></div>
+            <div style={{display:"flex",justifyContent:"center"}}>
+                <h5 style={{color:"#10B3A0"}}>Access List Of Seleted EMRS</h5></div>
             <div style={{margin:"1em"}}>
                 <table style={tableStyle}>
                     <tr style={tableStyle}>
@@ -137,7 +133,7 @@ var memberdata=[""];//edit this
                         <td>{}</td>
                         <td>{}</td>
                         <td style={{
-                                    padding:"1em 2em",
+                                    padding:"0em 2em",
                                     borderCollapse: "separate",
                                     borderRadius: "1em",
                                     color:"10B3A0",

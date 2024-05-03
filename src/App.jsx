@@ -1,27 +1,20 @@
-import React, { useNavigate, useLocation, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar } from "./components/components";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Intro, Register,Account,Requests, Create,/*Create,Login,TempAccount*/ } from "./routes/routes";
-import { loadBlockchain,/*fetchAccount*/ } from "./blockchain/setup";
-// import { checkIfUserAlreadyExists, createAccount } from "./blockchain/registerUser";
-// import { BeforeSignIn,DoctorProfile,User } from "./profiles/profiles";
-// import { Tokens,History,Profile } from "./routes/patientapj/patient";
+import { Intro, Register,Account,Requests, Create, TempAccount} from "./routes/routes";
+import { loadBlockchain } from "./blockchain/setup";
 import { AddDoctor,AddDept,PatientLog,Appointments,Slot,DashboardHospital,HospitalLogin } from "./routes/hospital/hospital";
 import { Appointment,FamilyEmrView,FamilyMembers,AppointmentView,PatientLogin } from "./routes/patient/patient";
 import { Emr,FamilyEmr,EmrShare,EmrView,AppointmentDetails,DashboardPatient } from "./routes/patient/patient";
 import { Admin, Blacklist, DashboardAdmin, Verify,VerifyDetails,Addhospital,Addhospitals } from "./routes/admin/admin";
 import { DoctorLogin,DashboardDoctor,PatientLogs,LogDetails,ApppointmentDoctor } from "./routes/doctor/doctor";
 import { DoctorAppointmentDetails,EmrDoctor,AppointmentGenerate } from './routes/doctor/doctor'
-import {BG} from "../src/images/images"
+import { setEncryptedPrivateKey } from "./contract_functions/admin_info";
+import { getData,setData } from "./storage/session";
 
 
 
-const style={
-  backgroundUrl:`url(${BG})`
-}
 
-
-/////
 
 export function App(props) {
  
@@ -48,67 +41,25 @@ export function App(props) {
 
 
   async function initialize(){
- 
-    const _web3=await loadBlockchain();
-    if(_web3!=null){
-      setWeb3(_web3);
+    const checkStatus=getData('status')
+    if(checkStatus=='undefined'||checkStatus==undefined||checkStatus==null){
+      const _web3=await loadBlockchain();
+      if(_web3!=null){
+        setWeb3(_web3);
+        await setEncryptedPrivateKey(_web3,'password') 
+      }
+      setData('status','initialized')
+      console.log('web3 initialized')
     }
-
-    //depending on the the accounts split
-    // setOptions([
-    //   <BeforeSignIn/>,
-    //   <DoctorProfile account={account}/>,
-    //   <User account={account}/>,
-    //   <TempAccount web3={web3} registrationType={'register'}/>
-    // ]);
   }
 
-  // function getCurrentPage(options,type){
-  //   console.log({options ,type})
-  //   if(type=="user"){
-  //     return options[2];
-  //   }
-  //   else if(type=="doctor"){
-  //     return options[1];
-  //   }
-  //   else if(type=="pharmacist"){
-  //     return options[0];//####
-  //   }
-  //   else if(type=="receptionist"){
-  //     return options[0];//#####
-  //   }
-  //   else{
-  //     return options[0];
-  //   }
-  // } 
+
 
   
 
   return (
     <div >
-      {/* <Router>
-        <Routes>
-          <Route path="/" element={getCurrentPage(options,account.type)} />
-          <Route
-            path="/register"
-            element={
-              <Register
-                props={{
-                  contract: null,
-                  accounts:null
-                }}
-              />
-            }
-          />
-          <Route path="/login" element={<Login/>}/>
-          {
-            options[3]!=undefined?<Route path="/create" element={<Create web3={web3} />}/>:null
-          }
-          
-          <Route path="/account" element={<Account/>}/>
-          <Route path="/requests" element={<Requests/>}/>
-        </Routes>
-      </Router> */}
+
       <Router>
         <Navbar />
         <Routes>
@@ -123,6 +74,8 @@ export function App(props) {
           <Route path="/history" element={<History/>}/>
           <Route path="/tokens" element={<Tokens/>}/> 
           <Route path="/profile" element={<Profile/>}/>*/}
+
+          <Route path="/temp" element={<TempAccount web3={web3}/>}/> 
 
           {/** HOSPITAL ROUTING */}
           <Route path="/hospital" element={<HospitalLogin/>}/>
@@ -162,8 +115,8 @@ export function App(props) {
           <Route path="/verify" element={<Verify/>}/>
           <Route path="/verifydetails" element={<VerifyDetails/>}/>
           <Route path="/blacklist" element={<Blacklist/>}/>
-          <Route path="/addhopsital" element={<Addhospital/>}/>
-          <Route path="/addhopsitalusername" element={<Addhospitals/>}/>
+          <Route path="/addhospital" element={<Addhospital/>}/>
+          <Route path="/addhospitalusername" element={<Addhospitals/>}/>
         </Routes>
       </Router>
     </div>

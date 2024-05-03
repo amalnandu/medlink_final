@@ -1,31 +1,24 @@
 import React,{useState,useEffect} from "react"
-import {Create,Register,Login} from "../routes/routes"
-import {createAccount} from "../blockchain/registerUser"
 
-
-export const TempAccount=({web3,registrationType})=>{
-    const [registerType,setRegisterType]=useState();
-    const [tempAccount,setTempAccount]=useState();
-
-    async function initialize(){
-        console.log("temp account",{web3,registrationType});
-        if(web3!=null){
-        const _tempAccount=await createAccount(web3);
-        setTempAccount(_tempAccount);
-        }
-        
+const styles={
+    upload_wrap:{
+        position: "relative"
+    },
+    
+    upload_btn:{
+        position: "absolute",
+        left: "0",
+        opacity: "0"
     }
+}
 
-    useEffect(()=>{
-        initialize();
-    },[]);
+export const TempAccount=({web3})=>{
 
     return (
-        <div>
-           <Create web3={web3} tempAccount={tempAccount}/>; 
-        {
-            
-        }   
-        </div> 
+        
+       <div style={styles.upload_wrap}>
+            <button type="button" class="nice-button">upload_file</button>
+            <input type="file" name="file" style={styles.upload_btn} onClick={(e)=>{console.log(e.target.files[0])}}/>
+        </div>
      );
 }

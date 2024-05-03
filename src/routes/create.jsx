@@ -1,13 +1,18 @@
 import React, { useState,useEffect, } from "react";
 import { Button, Card } from "../components/components";
 import { Link ,useNavigate} from "react-router-dom";
+import { BG } from "../images/images";
+import { checkIfUserAlreadyExists,createAccount, } from "../blockchain/registerUser";
+import { getData, setData } from "../storage/session";
+import { encryptUsingPassword } from "../encryption_and_cpabe/encryption";
+import 'react-dropdown/style.css';
 import "../styles/routes.css";
 import "../styles/fonts.css";
-import { BG } from "../images/images";
-import { Dropdown } from "../components/dropdown";
-import { checkIfUserAlreadyExists,createAccount } from "../blockchain/registerUser";
-// import { register } from "../blockchain/setup";
 
+
+
+
+{/**styles */}
 
 const text = {
   color: "#dc3845",
@@ -65,52 +70,123 @@ const button = {
 };
 
 
-let exists;
+async function fetchAccount(web3,password){
+
+  let account_address=getData('account-address');
+  let private_key=getData('private-key');
+  console.log({account_address,private_key},)
+
+  //create  temporary account if no account is present
+  if(account_address===null||private_key===null||account_address===undefined||private_key===undefined||account_address==='undefined'||private_key==='undefined'){
+
+    const accountData=await createAccount(web3);
+    console.log('again new data created')
+
+    //store in local variable
+    account_address=accountData.account.address;
+    private_key=accountData.account.privateKey;
+
+    //store to session
+    setData('account-address',account_address);
+    const enc_private_key=encryptUsingPassword(private_key,password)
+    setData('enc-private-key',enc_private_key);
+  }
+
+  const account={
+    address:account_address,
+    private_key:account_address
+  }
+
+  console.log({account})
+
+  return account; 
+} 
+
+
+
 const Create = ({ props,web3,account,setAccount }) => {
   
-
-  console.log({web3,account,})
-
-  const [display,setdisplay]=useState(false);
-  const [name, setName] = useState("");
-  const [userExists,setUserExists]=useState(false);
-  
-  useEffect(()=>{},[account])
-  const navigate = useNavigate();
   let tempAccount=null;
+  
 
-  const changeDisplay = async () => {
+  const [name, setName] = useState("");
+  const [check,setCheckStatus]=useState(true);
+  const [proceed,setProceed]=useState(null);
+  const [display,setdisplay]=useState(false);
 
-    setdisplay(!display);
-    if(account==undefined && web3!=null){
-      createAccount(web3).then(async (data)=>{
-        
-        console.log('addresss',data.account,account)
-        account={address:data.account,type:""}
-        setAccount({address:data.account,type:""});
-        tempAccount={address:data.account,type:""};
-      })
+  const [password,setPassword]=useState('');
+  const [confirm,setConfirmPassword]=useState('');
+
+  const navigate = useNavigate();
+
+  //compares the password enterd
+  function confirmPasswords(){
+    if(password==''||confirm==''||password!=confirm){
+      return false;
     }
-    if(tempAccount!=null && tempAccount.address){
-      const exists=await checkIfUserAlreadyExists(name,web3,tempAccount.address);
-      
-      
-      if(exists==false)  
-        navigate("/register");
-        console.log({exists})
-      
-    }
-    console.log('hi',{tempAccount,account})
-    
-  };
-
-  function changePage(){
-    navigate("/register");
+    return true;
   }
   
+  //unless the user already exist you can create a new user with that user name and 
+  //data is stored in session
+  const validate = async () => {
+    
+    const exists=await checkIfUserAlreadyExists(name,web3);
+    
+    setProceed(exists)
+
+    if(exists==false){
+      setCheckStatus(false)
+      setData('user-name',name)
+    }
+    else{
+      setCheckStatus(true)
+    }
+
+  };
+
+  /**
+   * 
+   * if(tempAccount==null && web3!=null){
+      tempAccount=await fetchAccount(web3);
+    }
+    if(tempAccount!=null){
+      const exists=await checkIfUserAlreadyExists(name,web3);
+      console.log({exists})
+
+      setProceed(exists)
+
+      if(exists==false){
+        setCheckStatus(false)
+        setData('user-name',name)
+      }
+      else{
+        setCheckStatus(true)
+      }
+    }
+   * 
+   */
+
+  //confirms the password checks and whether we can register 
+  //if yes we create a temporary acccount which will be thhe account for the new user
+  async function shouldRegister(){
+   
+    if(proceed==false && confirmPasswords())  {
+      navigate("/register");
+      setData('password',password)
+
+      //temporary account created and credentials stored in session
+      tempAccount=await fetchAccount(web3,password);
+
+    }
+  }
+    
 
 
   return (
+
+    
+
     <div className="row-center" style={background}>
       <Card className="row-center" style={card}>
         <div className="column-center"
@@ -129,14 +205,16 @@ const Create = ({ props,web3,account,setAccount }) => {
             onChange={(event) => setName(event.target.value)}
             placeholderStyle={placeholderStyle}
           />
-          {userExists &&
+
+      
+          {proceed==false &&
           <div>
           <input
             style={inputStyle}
             type="password"
             placeholder="Password"
             // value={dob}
-            // onChange={(event) => setDob(event.target.value)}
+             onChange={(event) => setPassword(event.target.value)}
             placeholderStyle={placeholderStyle}
           />
           <input
@@ -144,7 +222,7 @@ const Create = ({ props,web3,account,setAccount }) => {
             type="password"
             placeholder="Confirm Password"
             // value={place}
-            // onChange={(event) => setPlace(event.target.value)}
+            onChange={(event) => setConfirmPassword(event.target.value)}
           placeholderStyle={placeholderStyle}
           />
           {/* <Dropdown options={[{value:"option1",label:"option1"}]}></Dropdown> */}
@@ -152,14 +230,17 @@ const Create = ({ props,web3,account,setAccount }) => {
               style={{ textDecoration: "none", color: "inherit" }}
               to="/register"
             >
-          <Button className={`button-rounded`} style={button}>
-            Create Account
-          </Button>
+       
           </Link></div>}
           
-           <Button className={`button-rounded`} style={button} onClick={async ()=>{await changeDisplay()}}>
-            Submit
-          </Button>
+            {check==true &&<label  style={{color:"white"}}>Check again Username</label>}
+           {check==true && <Button className={`button-rounded`} style={button} onClick={async ()=>{await validate()}}>
+            Check
+          </Button>}
+
+          {proceed==false && <Button className={`button-rounded`} style={button} onClick={shouldRegister}>
+            Next
+          </Button>}
         </div>
       </Card>
     </div>

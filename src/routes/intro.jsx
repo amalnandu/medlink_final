@@ -60,7 +60,7 @@ const Intro = () => {
            </Link>
             <Link
               style={{ textDecoration: "none", color: "inherit" }}
-              to="/create"
+              to="/create-account"
             >
               <Button className={`button-rounded`} style={button}>
                 REGISTER

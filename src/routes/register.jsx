@@ -3,8 +3,12 @@ import { Button, Card } from "../components/components";
 import "../styles/routes.css";
 import "../styles/fonts.css";
 import { BG } from "../images/images";
-import { Dropdown } from "../components/dropdown";
-import { register } from "../blockchain/setup";
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
+import { generateKey } from "../encryption_and_cpabe/cpabe";
+import { getData } from "../storage/session";
+import { setUserData } from "../contract_functions/patient_info";
+import { setRegistrationData } from "../contract_functions/registration";
 
 const text = {
   color: "#dc3845",
@@ -60,6 +64,9 @@ const button = {
   padding: "1.5em",
 };
 
+
+
+
 const Register = ({ props,web3,account }) => {
   // Define state variables for each input field
   const [name, setName] = useState("");
@@ -67,34 +74,69 @@ const Register = ({ props,web3,account }) => {
   const [place, setPlace] = useState("");
   const [sex, setSex] = useState("");
   const [aadhaar, setAadhaar] = useState("");
+  const [role,setVal]=useState('Patient');
+
+  //dropdown
+  const dropdown_options=["Patient","Doctor","Researcher"];
+  const defaultOption=dropdown_options[0];
+  function setDropdown(e){
+    if(e.val!=undefined){
+    setVal(e.val);
+    console.log(e.value);
+    }
+  }
 
   // Function to handle form submission
   function submitForm(event) {
     event.preventDefault(); // Prevent default form submission
+    const date = parseInt( dob.split('-')[2]+dob.split('-')[1]+dob.split('-')[0]);
 
-    // Create an object with form data
-    const formData = {
+    let _role=role;
+
+    if(role===undefined){
+      setVal('Patient')
+      _role='Patient';
+    }
+    
+    //generate cpabe
+    generateKey([getData('user-name'),_role])
+   
+    //based on the role call their contract functions
+    if(_role=='Patient'){
+      setUserData(
+        web3,
+        getData('user-name'),
+        getData('enc-private-key'),
+        getData('cpabe'),
+        [getData('user-name'),role]
+      )
+    }
+    else if(_role=='Doctor'){
+      // complete
+    }
+    else if(_role=='Researcher'){
+      //complete
+    }
+    
+    //call contract function
+    setRegistrationData(
+      getData('user-name'),
       name,
-      dob,
+      date,
       place,
       sex,
       aadhaar,
-    };
+      _role,
+      getData('account-address')
+    )  
 
-    // Log form data (for demonstration)
-    console.log(formData);
-
-    // You can perform further actions here, such as sending the form data to a server via AJAX
-    if (props?.contract) {
-      register(props?.contract, props?.accounts[0], formData);
-    }
-
+ 
     // Reset form fields after submission (optional)
-    // setName("");
-    // setDob("");
-    // setPlace("");
-    // setSex("");
-    // setAadhaar("");
+    setName("");
+    setDob("");
+    setPlace("");
+    setSex("");
+    setAadhaar("");
   }
 
   return (
@@ -109,7 +151,7 @@ const Register = ({ props,web3,account }) => {
             justifyContent: "center",
             width: "80%",
           }}
-          onSubmit={submitForm}
+          
         >
           <h1 style={text}>Register</h1>
           <input
@@ -120,6 +162,9 @@ const Register = ({ props,web3,account }) => {
             onChange={(event) => setName(event.target.value)}
             placeholderStyle={placeholderStyle}
           />
+          <div className="column-center">
+            <Dropdown  options={dropdown_options} value={defaultOption} placeholder="Select an option" onChange={setDropdown} />;
+          </div>
           <input
             style={inputStyle}
             type="date"
@@ -153,7 +198,7 @@ const Register = ({ props,web3,account }) => {
             onChange={(event) => setAadhaar(event.target.value)}
             placeholderStyle={placeholderStyle}
           />
-          <Button className={`button-rounded`} style={button}>
+          <Button className={`button-rounded`} style={button} onClick={async (e)=>{submitForm(e)}}>
             REGISTER
           </Button>
         </form>

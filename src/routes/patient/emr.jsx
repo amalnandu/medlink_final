@@ -8,30 +8,59 @@ import { Link } from "react-router-dom";
 const label = {
     width: "70%",
     fontSize: "1.1em",
-    borderRadius:"0",
-    border: " 3px solid #dc3845",
+    borderRadius:"2em",
+    border: " 3px solid #10B3A0",
     opacity: 1,
     color: "black",
-    background: "rgba(255, 255 , 255, 0.43)",
+    background: "#10B3A0",
   };
 
 const tableStyle = {
     border: "1px solid black",
-    borderCollapse: "collapse",
+    borderCollapse: "separate",
     width:"100%"
 };
 
 const submitButtonStyle = {
     width:"30%",
-    border:" none",
-    borderRadius:"0.5em",
     backgroundColor:"rgba(1, 1 , 1, 0.43)",
-    color:"white",
+    color:"#10B3A0",
     fontFamily: "'PT Sans', sans-serif",
     fontWeight: '400',
     fontStyle: 'normal',
     padding:"1em"
 };
+
+const viewButtonStyle = {
+    width:"100%",
+    margin:"0",
+    backgroundColor:"rgba(1, 1 , 1, 0.43)",
+    color:"#10B3A0",
+    fontFamily: "'PT Sans', sans-serif",
+    fontWeight: '400',
+    fontStyle: 'normal',
+    padding:"1em"
+};
+
+const tableRowStyle={
+    padding:"1em 3em",
+    width:"20%",
+    border: "1px solid #10B3A0",
+    borderCollapse: "separate",
+    borderRadius: "1em",
+    margin:"10% 20%",
+    color: "#10B3A0"
+}
+
+const tableContentStyle={
+    padding:"0em 1em",
+    border: "1px solid #10B3A0",
+    borderCollapse: "separate",
+    borderRadius: "1em",
+    margin:"10% 20%",
+    color:"black",
+    backgroundColor:"#10B3A0"
+}
 
 const Emr=({children})=>{
 
@@ -60,26 +89,37 @@ function submit(e,date){
             <div style={{margin:"1em"}}>
                 <table style={tableStyle}>
                     <tr style={tableStyle}>
-                        <th style={{padding:"1em 1em",width:"10%",border: "1px solid black",borderCollapse: "collapse"}} >Select</th>
-                        <th style={{padding:"1em 3em",width:"20%",border: "1px solid black",borderCollapse: "collapse"}} >Time</th>
-                        <th style={{padding:"1em 3em",width:"20%",border: "1px solid black",borderCollapse: "collapse"}} >Hospital</th>
-                        <th style={{padding:"1em 3em",width:"20%",border: "1px solid black",borderCollapse: "collapse"}} >Department</th>
-                        <th style={{padding:"1em 3em",width:"20%",border: "1px solid black",borderCollapse: "collapse"}} >Doctor</th>
-                        <th style={{padding:"1em 3em",width:"20%",border: "1px solid black",borderCollapse: "collapse"}} >Actions</th>
-                        <th style={{padding:"1em 3em",width:"20%"}}>Reasearch Sharing</th>
+                        <th style={tableRowStyle} >Select</th>
+                        <th style={tableRowStyle} >Time</th>
+                        <th style={tableRowStyle} >Hospital</th>
+                        <th style={tableRowStyle} >Department</th>
+                        <th style={tableRowStyle} >Doctor</th>
+                        <th style={tableRowStyle} >Actions</th>
+                        <th style={tableRowStyle}>Reasearch Sharing</th>
                     </tr>
                     {
                     memberdata?.map((name,key)=>{
-                    return(<tr>
-                        <td style={{border: "1px solid black",borderCollapse: "collapse",padding:"0em 1em"}}><input type="checkbox"/></td>
-                        <td style={{border: "1px solid black",borderCollapse: "collapse",padding:"0em 1em"}}>{}</td>
-                        <td style={{border: "1px solid black",borderCollapse: "collapse",padding:"0em 1em"}}>{}</td>
-                        <td style={{border: "1px solid black",borderCollapse: "collapse",padding:"0em 1em"}}>{}</td>
-                        <td style={{border: "1px solid black",borderCollapse: "collapse",padding:"0em 1em"}}>{}</td>
+                    return(<tr style={tableContentStyle}>
+                        <td ><input type="checkbox"/></td>
+                        <td >{}</td>
+                        <td >{}</td>
+                        <td >{}</td>
+                        <td >{}</td>
+                        <td >
                         <Link to="/emr/view">
-                            <td style={{border: "1px solid black",borderCollapse: "collapse",padding:"0em 1em"}}><Button>View Detials</Button></td>
+                            <Button style={viewButtonStyle}>View Detials</Button>
                         </Link>
-                        <td style={{border: "1px solid black",borderCollapse: "collapse",padding:"0em 1em"}}><Button>Turn Off</Button></td>
+                            </td>
+                        
+                        <td style={{
+                            padding:"0em 1em",
+                            border: "1px solid #10B3A0",
+                            borderCollapse: "separate",
+                            borderRadius: "1em",
+                            color:"10B3A0",
+                            justifyContent:"center",
+                            display:"flex"
+                        }}><Button style={viewButtonStyle}>Turn Off</Button></td>
                     </tr>);})}
                 </table>
             </div>
